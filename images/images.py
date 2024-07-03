@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-class Images():
-    # Fonction pour afficher les données matricielles sous forme d'images
+class ImagesManager():
+    # Affiche les données matricielles en image
     def displayImages(x, y, n, label=False):
-        plt.figure(figsize=(20,2))
+        plt.figure(figsize=(20, 2))
         for i in range(10):
-            ax = plt.subplot(1, n, i+1)
+            ax = plt.subplot(1, n, i + 1)
             plt.imshow(x.values[i].reshape(28,28))
             if label:
                 plt.title("Digit: {}".format(y[i]))
