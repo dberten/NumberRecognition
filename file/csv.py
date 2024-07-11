@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import pandas
 from pandas import DataFrame
-from exception import csvException
+from exception.csv import csvException
 
 class CsvManager:
     def __init__(self, path):

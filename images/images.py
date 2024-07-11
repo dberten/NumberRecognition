@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 class ImagesManager():
+    def __init__(self) -> None:
+        pass
     # Affiche les données matricielles en image
     def displayImages(x, y, n, label=False):
         plt.figure(figsize=(20, 2))
@@ -14,11 +16,11 @@ class ImagesManager():
             ax.get_yaxis().set_visible(False)
         plt.show()
 
-    def convertImages(x, y):
-        return x.astype("float32"), y.astype("float32")
+    def convertImages(self, x_train, x_test):
+        return x_train.astype("float32"), x_test.astype("float32")
 
-    def reshapeImages(x, y):
-        return x.reshape(60000, 784), y.reshape(10000, 784)
+    def reshapeImages(self, x_train, x_test):
+        return x_train.reshape((x_train.shape[0], 28, 28, 1)), x_test.reshape((x_test.shape[0], 28, 28, 1))
     
-    def normalizeImages(x, y):
-        return x / 255, y /255
+    def normalizeImages(self, x_train, x_test):
+        return x_train / 255, x_test / 255
