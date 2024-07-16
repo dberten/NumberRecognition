@@ -1,18 +1,29 @@
+import keras.src
 import tensorflow
+import os
+import base64
 import keras
 from exception.tensorFlow.layerException import layerException
 from exception.tensorFlow.fitException import fitException
 from exception.tensorFlow.compileException import compileException
 from exception.tensorFlow.evaluateException import evaluateException
+from exception.tensorFlow.saveException import saveException
 from keras.src.models import Sequential
 from keras.src.layers import Conv2D, Dense, Dropout, MaxPooling2D, Flatten
 from keras.src import Input
+from keras.src.saving import load_model
 from model.enumeration.layerEnum import layerEnum
 
 class TensorFlowModel():
+    _root = "bin"
+
     def __init__(self):
-        self._model = Sequential([Input(shape=(28, 28, 1))])
-        self._isCompiled = False
+        if os.path.exists(self._root + "/model.keras"):
+            self._model = load_model(self._root + "/model.keras")
+            self._isCompiled = True
+        else:
+            self._model = Sequential([Input(shape=(28, 28, 1))])
+            self._isCompiled = False
         
     def compile(self, loss, optimizer, metrics):
         self._model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
@@ -49,3 +60,15 @@ class TensorFlowModel():
                 return self._model.evaluate(x=x_train, y=y_train, verbose=verbose)
         except Exception:
             raise evaluateException(message="Failed to evaluate the neuronal network.")
+    
+    def save(self):
+        try:
+            if self._isCompiled:
+                path = self._root + "/model.keras"
+                self._model.save(path)
+                with open(path, "rb") as file:
+                    model_bin = file.read()
+                model_base64 = base64.b64encode(model_bin)
+                return model_base64
+        except Exception:
+            raise saveException(message="This model can't be saved.")
