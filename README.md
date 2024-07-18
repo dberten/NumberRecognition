@@ -1,5 +1,5 @@
 # NumberRecognition
-Python service that recognise a number from an image
+Service python de reconnaissance d'un nombre à partir d'une image
 
 # LIBRAIRIES
 - tensorflow
