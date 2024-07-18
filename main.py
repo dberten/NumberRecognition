@@ -13,30 +13,27 @@ from sklearn.model_selection import train_test_split
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 if __name__ == "__main__":
-    train_path = "bin/train.csv"
-    test_path = "bin/test.csv"
-    csvManager = CsvManager(path=train_path)
-    x_train, y_train = "", ""
-    x_test, y_test = "", ""
+
+    # Instanciation du DataSet
+    dataSet = DataSet()
+    (x_train, y_train), (x_test, y_test) = dataSet.getDataSet()
+    labels = y_train
+    isFromCsvDataset = os.path.exists("bin/test.csv")
+    print("Is this from csv file ? ", isFromCsvDataset)
     images = ImagesManager()
-    isFromCsvDataset = False
-    if os.path.exists(train_path):
-        train = csvManager.read_csv(csvManager.path)
-        x_train = csvManager.drop_csv(train, column="label")
-        y_train = train["label"]
-        x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.2, shuffle=False)
-        isFromCsvDataset = True
-    else:
-        (x_train, y_train), (x_test, y_test) = DataSet().LoadData()
-        print(x_train.shape)
+    print("Hello Big Brain you have to find : " + ', '.join(map(str, y_train[:9])))
+
+    # Mise en forme du Data Set
     x_train, x_test = images.reshapeImages(x_train, x_test, isFromCsvDataset)
     x_train, x_test = images.convertImages(x_train, x_test)
     x_train, x_test = images.normalizeImages(x_train, x_test)
-    y_train = to_categorical(y_train, 10)
     y_test = to_categorical(y_test, 10)
-    # instanciation du réseau neuronal
+    y_train = to_categorical(y_train, 10)
+
+    # Instanciation du réseau neuronal
     model = TensorFlowModel()
     if not os.path.exists("bin/model.keras"):
+        print("No model found.")
         model.add(type=layerEnum.CONV, layerParameters={"unitSize" : 32, "kernelSize" : (3, 3), "activation" : "relu"})
         model.add(type=layerEnum.DENSE, layerParameters={"unitSize" : 128, "activation" : "relu"})
         model.add(type=layerEnum.MAXPOOLING, layerParameters={"poolSize" : (2, 2)})
@@ -45,6 +42,12 @@ if __name__ == "__main__":
         model.add(type=layerEnum.DROPOUT, layerParameters={"unitSize" : 0.5})
         model.add(type=layerEnum.DENSE, layerParameters={"unitSize" : 10, "activation" : "softmax"})
         model.compile(loss=categorical_crossentropy, optimizer=Adadelta(), metrics=["accuracy"])
-    model.fit(x_train=x_train, y_train=y_train, epochs=10, batchSize=128, verbose=2, validationData=(x_test, y_test))
-    test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=2)
-    model_base64 = model.save()
+    hist = model.fit(x_train=x_train, y_train=y_train, epochs=4, batchSize=128, verbose=2, validationData=(x_test, y_test))
+    model.save()
+
+    # Interprétation des résultats du modèle
+    loss, accuracy = model.evaluate(x_test, y_test, verbose=1)
+    print(f"Accuracy : {accuracy * 100} %")
+    predictions = model.predict(x_train)
+    model.displayPrediction(x_train[:9], labels[:9], predictions=predictions[:9], nb_rows=3, nb_cols=3)
+    model.displayGraphLoosAcc(history=hist)

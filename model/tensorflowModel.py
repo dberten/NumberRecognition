@@ -1,8 +1,8 @@
-import keras.src
-import tensorflow
 import os
 import base64
 import keras
+import matplotlib.pyplot as plt
+import numpy as np
 from exception.tensorFlow.layerException import layerException
 from exception.tensorFlow.fitException import fitException
 from exception.tensorFlow.compileException import compileException
@@ -24,20 +24,23 @@ class TensorFlowModel():
         else:
             self._model = Sequential([Input(shape=(28, 28, 1))])
             self._isCompiled = False
-        
+
+    # Compile le modèle    
     def compile(self, loss, optimizer, metrics):
         self._model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
         self._isCompiled = True
     
+    # Entraîne le modèle
     def fit(self, x_train, y_train, epochs, batchSize, verbose, validationData):
         try:
             if not self._isCompiled:
                 raise compileException(message="Neuronal network is not compiled.")
             else:
-                self._model.fit(x_train, y_train, epochs=epochs, verbose=verbose, batch_size=batchSize, validation_data=validationData)
+                return self._model.fit(x_train, y_train, epochs=epochs, verbose=verbose, batch_size=batchSize, validation_data=validationData)
         except Exception:
             raise fitException(message="Error during the neuronal network training.")
-        
+
+    # Ajoute une couche au réseau    
     def add(self, type, layerParameters):
         if type == layerEnum.DENSE:
             self._model.add(Dense(layerParameters["unitSize"], activation=layerParameters["activation"]))
@@ -52,6 +55,7 @@ class TensorFlowModel():
         else:
             raise layerException(message="Layer doesn't exist.")
 
+    # Evaluel l'efficacité du modèle (perte & prédiction)
     def evaluate(self, x_train, y_train, verbose):
         try:
             if not self._isCompiled:
@@ -61,14 +65,51 @@ class TensorFlowModel():
         except Exception:
             raise evaluateException(message="Failed to evaluate the neuronal network.")
     
+    # Sauvegarde du modèle
     def save(self):
         try:
             if self._isCompiled:
                 path = self._root + "/model.keras"
                 self._model.save(path)
-                with open(path, "rb") as file:
-                    model_bin = file.read()
-                model_base64 = base64.b64encode(model_bin)
-                return model_base64
         except Exception:
             raise saveException(message="This model can't be saved.")
+    
+    # Donne la prédiction du modèle
+    def predict(self, value):
+        if self._isCompiled:
+            return self._model.predict(value)
+        else:
+            raise compileException(message="Neuronal network is not compiled.")
+
+    # Affiche la prédiction du modèle
+    def displayPrediction(self, images, labels, predictions, nb_rows, nb_cols):
+        fig, axes = plt.subplots(nb_rows, nb_cols, figsize=(12, 12))
+        for i, ax in enumerate(axes.flat):
+            if i < len(images):
+                img = images[i].reshape(28, 28)
+                true_label = labels[i]
+                predicted_label = np.argmax(predictions[i])
+                ax.imshow(img, cmap='gray')
+                ax.set_title(f'Label: {true_label}, Pred: {predicted_label}')
+                ax.axis('off')
+        plt.tight_layout()
+        plt.show()
+    
+    # Affiche le graph de perte et de précision
+    def displayGraphLoosAcc(self, history):
+        # Graph de perte
+        plt.figure(figsize=(12, 5))
+        plt.subplot(1, 2, 1)
+        plt.plot(history.history['val_loss'], label='Valeur Perte')
+        plt.title('Graphique représentant la perte')
+        plt.xlabel('Epoch')
+        plt.ylabel('Perte')
+        plt.legend()
+        # Graph de précision
+        plt.subplot(1, 2, 2)
+        plt.plot(history.history['val_accuracy'], label='Valeur Précision')
+        plt.title('Graphique représentant la précision')
+        plt.xlabel('Epoch')
+        plt.ylabel('Précision')
+        plt.legend()
+        plt.show()
