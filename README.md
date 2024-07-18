@@ -11,3 +11,6 @@ Python service that recognise a number from an image
 # Prérequis
 - Installation des dépendances : 
     - pip install -r requirements.txt
+
+## COMMANDES
+- Depuis une invite de commande : python ./main.py
