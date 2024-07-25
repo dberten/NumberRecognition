@@ -87,6 +87,6 @@ jobs:
         with:
           app-name: 'NumberRecognition'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: '.'
           scm-do-build-during-deployment: true
           enable-oryx-build: true
