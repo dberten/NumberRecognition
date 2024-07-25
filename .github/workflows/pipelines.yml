@@ -38,7 +38,7 @@ jobs:
     - name: Train model
       run: |
         source env/bin/activate
-        python main.py
+        python test/test.py
 
     - name: Archive test results
       if: always()
