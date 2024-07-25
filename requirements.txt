@@ -3,3 +3,4 @@ pandas
 matplotlib
 optree
 scikit-learn
+pytest

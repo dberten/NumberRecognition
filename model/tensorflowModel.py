@@ -35,8 +35,7 @@ class TensorFlowModel():
         try:
             if not self._isCompiled:
                 raise compileException(message="Neuronal network is not compiled.")
-            else:
-                return self._model.fit(x_train, y_train, epochs=epochs, verbose=verbose, batch_size=batchSize, validation_data=validationData)
+            return self._model.fit(x_train, y_train, epochs=epochs, verbose=verbose, batch_size=batchSize, validation_data=validationData)
         except Exception:
             raise fitException(message="Error during the neuronal network training.")
 

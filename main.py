@@ -42,7 +42,7 @@ if __name__ == "__main__":
         model.add(type=layerEnum.DROPOUT, layerParameters={"unitSize" : 0.5})
         model.add(type=layerEnum.DENSE, layerParameters={"unitSize" : 10, "activation" : "softmax"})
         model.compile(loss=categorical_crossentropy, optimizer=Adadelta(), metrics=["accuracy"])
-    hist = model.fit(x_train=x_train, y_train=y_train, epochs=4, batchSize=128, verbose=2, validationData=(x_test, y_test))
+    hist = model.fit(x_train=x_train, y_train=y_train, epochs=10, batchSize=128, verbose=2, validationData=(x_test, y_test))
     model.save()
 
     # Interprétation des résultats du modèle
