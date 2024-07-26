@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  AZUREWEBJOBSSTORAGE: "DefaultEndpointsProtocol=https;AccountName=stockagenbrecognition1;AccountKey=sVqYPM0Wv6FhCP975LsNRtXNQz2Qxtr8kBg8W4tasPJZ6VHXWzxPcH2sr+SiqU7SFlOezCe8QGMt+ASt4AINEw==;EndpointSuffix=core.windows.net"
+
 jobs:
   build:
     runs-on: ubuntu-latest
