@@ -18,7 +18,7 @@ if __name__ == "__main__":
     dataSet = DataSet()
     (x_train, y_train), (x_test, y_test) = dataSet.getDataSet()
     labels = y_train
-    isFromCsvDataset = os.path.exists("bin/test.csv")
+    isFromCsvDataset = os.path.exists("bin/train.csv")
     print("Is this from csv file ? ", isFromCsvDataset)
     images = ImagesManager()
     print("Hello Big Brain you have to find : " + ', '.join(map(str, y_train[:9])))

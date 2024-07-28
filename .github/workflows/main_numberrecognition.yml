@@ -92,4 +92,5 @@ jobs:
           slot-name: 'Production'
           package: '../../.'
           scm-do-build-during-deployment: true
+          azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
           enable-oryx-build: true
