@@ -106,4 +106,4 @@ jobs:
 
       - name: 'Deploy to Azure Functions'
         run: |
-          az webapp up --name NumberRecognition --resource-group NumberRecognition --plan deploy --location northeurope --sku B1 --verbose
+          az webapp up --name NumberRecognition --resource-group NumberRecognition --plan ASP-NumberRecognition-a1e3 --location northeurope --sku B1 --verbose
