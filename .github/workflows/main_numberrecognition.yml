@@ -36,7 +36,7 @@ jobs:
           source env/bin/activate
           pytest --junitxml=test-results.xml
 
-      - name: Train model
+      - name: Test model
         run: |
           source env/bin/activate
           python test/test_model.py
@@ -105,12 +105,5 @@ jobs:
           az functionapp config appsettings set --name NumberRecognition --resource-group NumberRecognition --settings AzureWebJobsStorage=${{ secrets.AZUREWEBJOBSSTORAGE }}
 
       - name: 'Deploy to Azure Functions'
-        uses: Azure/functions-action@v1
-        id: deploy-to-function
-        with:
-          app-name: 'NumberRecognition'
-          slot-name: 'Production'
-          package: '../../.'
-          scm-do-build-during-deployment: true
-          azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
-          enable-oryx-build: true
+        run: |
+          az webapp up --name NumberRecognition --resource-group NumberRecognition --plan deploy --location northeurope --sku B1 --verbose
